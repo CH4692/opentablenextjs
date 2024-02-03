@@ -1,5 +1,4 @@
 import Title from "./components/Title";
-import Header from "./components/Header";
 import RestaurantNavBar from "./components/RestaurantNavBar";
 import Ratings from "./components/Ratings";
 import Description from "./components/Description";

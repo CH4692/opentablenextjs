@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx prisma generate && npx prisma migrate deploy && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "npx playwright test",
     "report": "npx playwright show-report",
-    "postinstall": "npx prisma generate"
+    "postinstall": "prisma generate"
 
   },
   "dependencies": {

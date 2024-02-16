@@ -72,6 +72,13 @@ export default async function Search({
   const restaurants = await fetchRestaurant(searchParams);
   const cuisines = await fetchCuisines();
   const locations = await fetchLocations();
+  console.log("Restaurants");
+  console.log(restaurants);
+  console.log("Cuisines");
+  console.log(cuisines);
+  console.log("Locations");
+  console.log(locations);
+
   return (
     <>
       <Header />

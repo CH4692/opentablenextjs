@@ -10,6 +10,12 @@ export default function SearchSideBar({
   cuisines: Cuisine[];
   searchParams: { city?: string; cuisine?: string; price?: PRICE };
 }) {
+  console.log("Locations:");
+  console.log(locations);
+  console.log("Cuisines:");
+  console.log(cuisines);
+  console.log("SearchParams:");
+  console.log(searchParams);
   const prices = [
     {
       price: PRICE.CHEAP,

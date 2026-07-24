@@ -8,6 +8,7 @@ import prisma from "../../../prisma/db";
 import { Review } from "@prisma/client";
 import Reviews from "./components/Reviews";
 import { notFound } from "next/navigation";
+import { parseImages } from "../../../utils/images";
 
 type Restaurant = {
   id: number;
@@ -16,13 +17,13 @@ type Restaurant = {
   description: string;
   slug: string;
   reviews: Review[];
+  open_time: string;
+  close_time: string;
 };
 
 const fetchRestaurant = async (slug: string): Promise<Restaurant> => {
   const restaurant = await prisma.restaurant.findUnique({
-    where: {
-      slug,
-    },
+    where: { slug },
     select: {
       id: true,
       name: true,
@@ -30,13 +31,18 @@ const fetchRestaurant = async (slug: string): Promise<Restaurant> => {
       description: true,
       slug: true,
       reviews: true,
+      open_time: true,
+      close_time: true,
     },
   });
 
   if (!restaurant) {
     notFound();
   }
-  return restaurant;
+  return {
+    ...restaurant,
+    images: parseImages(restaurant.images),
+  };
 };
 
 export default async function RestaurantDetails({
@@ -47,7 +53,7 @@ export default async function RestaurantDetails({
   const restaurant = await fetchRestaurant(params.slug);
   return (
     <>
-      <div className="bg-white w-[70%] rounded p-3 shadow">
+      <div className="bg-white w-full lg:w-[70%] rounded-2xl p-4 sm:p-6 border border-[var(--line)] shadow-[0_8px_30px_rgba(16,20,24,0.05)]">
         <RestaurantNavBar slug={restaurant.slug} />
         <Title name={restaurant.name} />
         <Ratings reviews={restaurant.reviews} />
@@ -55,8 +61,12 @@ export default async function RestaurantDetails({
         <Images images={restaurant.images} />
         <Reviews reviews={restaurant.reviews} />
       </div>
-      <div className="w-[27%] relative text-reg">
-        <ReservationCard />
+      <div className="w-full lg:w-[28%] relative text-reg mt-6 lg:mt-0">
+        <ReservationCard
+          slug={restaurant.slug}
+          openTime={restaurant.open_time}
+          closeTime={restaurant.close_time}
+        />
       </div>
     </>
   );

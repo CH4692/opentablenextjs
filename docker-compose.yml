@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: seatly
+      POSTGRES_PASSWORD: seatly
+      POSTGRES_DB: seatly
+    ports:
+      - "5432:5432"
+    volumes:
+      - seatly_pg:/var/lib/postgresql/data
+
+volumes:
+  seatly_pg:

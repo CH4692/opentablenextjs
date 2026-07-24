@@ -9,9 +9,16 @@ type Data = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<Data | { errorMessage: string }>
 ) {
-  //   await prisma.table.deleteMany();
+  if (
+    process.env.VERCEL === "1" &&
+    process.env.ALLOW_SEED !== "true"
+  ) {
+    return res.status(403).json({ errorMessage: "Seed disabled in production" });
+  }
+
+  await prisma.reservation.deleteMany();
   await prisma.review.deleteMany();
   await prisma.item.deleteMany();
   await prisma.restaurant.deleteMany();

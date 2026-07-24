@@ -1,19 +1,45 @@
-export default function Header() {
+import { formatDisplayTime } from "../../../../utils/times";
+
+type Props = {
+  name: string;
+  image: string;
+  date: string;
+  time: string;
+  partySize: string;
+};
+
+export default function Header({ name, image, date, time, partySize }: Props) {
+  const prettyDate = new Date(`${date}T12:00:00`).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
   return (
     <div>
-      <h3 className="font-bold">You're almost done!</h3>
-      <div className="mt-5 flex">
+      <p className="text-sm uppercase tracking-[0.18em] text-[var(--accent)] mb-2">
+        Almost done
+      </p>
+      <h3 className="font-display text-3xl text-[var(--ink)]">
+        Confirm your table
+      </h3>
+      <div className="mt-6 flex flex-col sm:flex-row gap-4">
         <img
-          src="https://images.otstatic.com/prod1/49153814/2/medium.jpg"
-          alt=""
-          className="w-32 h-18 rounded"
+          src={image}
+          alt={name}
+          className="w-full sm:w-36 h-28 object-cover rounded-xl"
         />
-        <div className="ml-4">
-          <h1 className="text-3xl font-bold">Aiāna Restaurant Collective</h1>
-          <div className="flex mt-3">
-            <p className="mr-6">Tues, 22, 2023</p>
-            <p className="mr-6">7:30 PM</p>
-            <p className="mr-6">3 people</p>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[var(--ink)]">
+            {name}
+          </h1>
+          <div className="flex flex-wrap gap-x-6 gap-y-1 mt-3 text-[var(--muted)]">
+            <p>{prettyDate}</p>
+            <p>{formatDisplayTime(time)}</p>
+            <p>
+              {partySize} {Number(partySize) === 1 ? "person" : "people"}
+            </p>
           </div>
         </div>
       </div>

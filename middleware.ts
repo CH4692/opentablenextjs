@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as jose from "jose";
 
-export async function middleware(req: NextRequest, res: NextResponse) {
-  const bearerToken = req.headers.get("authorization") as string;
+export async function middleware(req: NextRequest) {
+  const bearerToken = req.headers.get("authorization");
 
   if (!bearerToken) {
     return new NextResponse(
       JSON.stringify({ errorMessage: "Unauthorized request" }),
-      { status: 401 }
+      { status: 401, headers: { "Content-Type": "application/json" } }
     );
   }
 
@@ -16,7 +16,7 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   if (!token) {
     return new NextResponse(
       JSON.stringify({ errorMessage: "Unauthorized request" }),
-      { status: 401 }
+      { status: 401, headers: { "Content-Type": "application/json" } }
     );
   }
 
@@ -24,14 +24,16 @@ export async function middleware(req: NextRequest, res: NextResponse) {
 
   try {
     await jose.jwtVerify(token, secret);
-  } catch (error) {
+  } catch {
     return new NextResponse(
       JSON.stringify({ errorMessage: "Unauthorized request" }),
-      { status: 401 }
+      { status: 401, headers: { "Content-Type": "application/json" } }
     );
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/api/auth/me "],
+  matcher: ["/api/auth/me"],
 };

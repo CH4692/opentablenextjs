@@ -2,8 +2,10 @@ import SearchBar from "../../components/SearchBar";
 
 export default function Header() {
   return (
-    <div className="bg-gradient-to-r to-[#5f6984] from-[#0f1f47] p-2">
-      <SearchBar />
+    <div className="hero-surface p-4 sm:p-6">
+      <div className="max-w-3xl mx-auto py-4">
+        <SearchBar />
+      </div>
     </div>
   );
 }

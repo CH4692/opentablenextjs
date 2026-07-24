@@ -1,3 +1,105 @@
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --ink: #101418;
+  --muted: #5a6570;
+  --mist: #dce3ea;
+  --paper: #f3f6f8;
+  --line: #cfd8e0;
+  --accent: #0f766e;
+  --accent-deep: #0b5a54;
+  --coral: #e11d48;
+  --hero-from: #0b1c24;
+  --hero-to: #163a40;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--ink);
+  background: var(--paper);
+  font-family: "Figtree", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.brand-mark {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-xl font-semibold text-white transition;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  box-shadow: 0 10px 24px rgba(15, 118, 110, 0.28);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.input-field {
+  @apply border border-[var(--line)] rounded-xl p-3 mb-3 bg-white outline-none transition;
+}
+
+.input-field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.18);
+}
+
+.hero-surface {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(15, 118, 110, 0.35), transparent 45%),
+    linear-gradient(115deg, rgba(11, 28, 36, 0.92), rgba(22, 58, 64, 0.78)),
+    url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1800&q=80")
+      center/cover;
+}
+
+.text-shadow {
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: rise 0.6s ease-out both;
+}
+
+.animate-rise-delay {
+  animation: rise 0.7s ease-out 0.12s both;
+}
+
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(16, 20, 24, 0.12);
+}

@@ -6,24 +6,31 @@ import { useState } from "react";
 export default function SearchBar() {
   const router = useRouter();
   const [location, setLocation] = useState("");
+
+  const go = () => {
+    if (!location.trim()) return;
+    router.push(`/search?city=${encodeURIComponent(location.trim())}`);
+    setLocation("");
+  };
+
   return (
-    <div className="text-left text-lg py-3 m-auto flex justify-center">
+    <div className="text-left text-base sm:text-lg m-auto flex flex-col sm:flex-row gap-3 justify-center max-w-2xl">
       <input
-        className="rounded  mr-3 p-2 w-[450px]"
+        className="rounded-xl p-3 sm:p-3.5 w-full sm:flex-1 bg-white/95 text-[var(--ink)] shadow-lg outline-none focus:ring-2 focus:ring-teal-300"
         type="text"
-        placeholder="State, city or town"
+        placeholder="Try ottawa, toronto, or niagara"
         value={location}
         onChange={(e) => setLocation(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") go();
+        }}
       />
       <button
-        className="rounded bg-red-600 px-9 py-2 text-white"
-        onClick={() => {
-          if (location === "") return;
-          router.push(`/search?city=${location}`);
-          setLocation("");
-        }}
+        type="button"
+        className="btn-primary rounded-xl px-8 py-3.5 whitespace-nowrap"
+        onClick={go}
       >
-        Let's go
+        Let&apos;s go
       </button>
     </div>
   );

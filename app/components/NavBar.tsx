@@ -15,7 +15,7 @@ export default function NavBar() {
       <Link href="/" className="brand-mark text-2xl sm:text-3xl tracking-tight">
         Seatly
       </Link>
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 min-h-9">
         {loading ? (
           <div className="h-9 w-28 rounded-lg bg-[var(--mist)] animate-pulse" />
         ) : data ? (

@@ -23,10 +23,9 @@ const style = {
 };
 
 export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
-  const { error, loading } = useContext(AuthenticationContext);
+  const { error, setAuthState } = useContext(AuthenticationContext);
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [submitting, setSubmitting] = useState(false);
   const { signin, signup } = useAuth();
   const [disabled, setDisabled] = useState(true);
   const [inputs, setInputs] = useState({
@@ -37,6 +36,16 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
     city: "",
     password: "",
   });
+
+  const handleOpen = () => {
+    setAuthState((prev) => ({ ...prev, error: null }));
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    if (submitting) return;
+    setOpen(false);
+  };
 
   const renderContent = (signInContent: string, signUpContent: string) => {
     return isSignIn ? signInContent : signUpContent;
@@ -66,11 +75,21 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
     }
   }, [inputs, isSignIn]);
 
-  const handleClick = () => {
-    if (isSignIn) {
-      signin({ email: inputs.email, password: inputs.password }, handleClose);
-    } else {
-      signup(inputs, handleClose);
+  const handleClick = async () => {
+    setSubmitting(true);
+    try {
+      if (isSignIn) {
+        await signin(
+          { email: inputs.email, password: inputs.password },
+          () => setOpen(false)
+        );
+      } else {
+        await signup(inputs, () => setOpen(false));
+      }
+    } catch {
+      // error is stored in auth context for display
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -89,49 +108,50 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
       </button>
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={(_, reason) => {
+          if (reason === "backdropClick") return;
+          handleClose();
+        }}
         aria-labelledby="auth-modal-title"
       >
-        <Box sx={style}>
-          {loading ? (
-            <div className="px-2 py-24 h-full flex justify-center">
-              <CircularProgress />
+        <Box sx={style} onMouseDown={(e) => e.stopPropagation()}>
+          <div className="p-1 relative">
+            {error && open && (
+              <Alert severity="error" className="mb-4" data-testid="auth-error">
+                {error}
+              </Alert>
+            )}
+            <div className="uppercase font-bold text-center pb-2 border-b mb-2 tracking-wide text-[var(--muted)]">
+              <p className="text-sm" id="auth-modal-title">
+                {renderContent("Sign In", "Create Account")}
+              </p>
             </div>
-          ) : (
-            <div className="p-1">
-              {error && (
-                <Alert severity="error" className="mb-4">
-                  {error}
-                </Alert>
-              )}
-              <div className="uppercase font-bold text-center pb-2 border-b mb-2 tracking-wide text-[var(--muted)]">
-                <p className="text-sm" id="auth-modal-title">
-                  {renderContent("Sign In", "Create Account")}
-                </p>
-              </div>
-              <div className="m-auto">
-                <h2 className="font-display text-2xl text-center mb-1">
-                  {renderContent(
-                    "Log into your account",
-                    "Create your Seatly account"
-                  )}
-                </h2>
-                <AuthModalInputs
-                  inputs={inputs}
-                  handleChangeInput={handleChangeInput}
-                  isSignIn={isSignIn}
-                />
-                <button
-                  type="button"
-                  className="btn-primary uppercase w-full p-3 rounded-xl text-sm mb-2 disabled:opacity-50"
-                  disabled={disabled}
-                  onClick={handleClick}
-                >
-                  {renderContent("Sign In", "Create Account")}
-                </button>
-              </div>
+            <div className="m-auto">
+              <h2 className="font-display text-2xl text-center mb-1">
+                {renderContent(
+                  "Log into your account",
+                  "Create your Seatly account"
+                )}
+              </h2>
+              <AuthModalInputs
+                inputs={inputs}
+                handleChangeInput={handleChangeInput}
+                isSignIn={isSignIn}
+              />
+              <button
+                type="button"
+                className="btn-primary uppercase w-full p-3 rounded-xl text-sm mb-2 disabled:opacity-50 inline-flex items-center justify-center gap-2"
+                disabled={disabled || submitting}
+                onClick={handleClick}
+              >
+                {submitting ? (
+                  <CircularProgress size={18} color="inherit" />
+                ) : (
+                  renderContent("Sign In", "Create Account")
+                )}
+              </button>
             </div>
-          )}
+          </div>
         </Box>
       </Modal>
     </div>

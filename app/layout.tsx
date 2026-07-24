@@ -18,10 +18,16 @@ export default function RootLayout({
               {children}
               <footer className="border-t border-[var(--line)] px-6 sm:px-10 py-10 mt-16 text-sm text-[var(--muted)] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
                 <p className="brand-mark text-xl text-[var(--ink)]">Seatly</p>
-                <p>
-                  Portfolio demo inspired by restaurant discovery apps. Not
-                  affiliated with OpenTable.
-                </p>
+                <div className="flex flex-col sm:items-end gap-1">
+                  <p>
+                    Portfolio demo inspired by restaurant discovery apps. Not
+                    affiliated with OpenTable.
+                  </p>
+                  <p className="text-[var(--ink)]">
+                    Made with <span className="text-[var(--accent)]">♥</span> by{" "}
+                    <span className="font-semibold">CharlesHeller</span>
+                  </p>
+                </div>
               </footer>
             </div>
           </AuthContext>

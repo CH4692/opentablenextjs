@@ -70,6 +70,17 @@ set -a && source .env.production.local && set +a && npx prisma db push
 
 Then set the same production URLs in your host’s Production environment variables.
 
+## Tests
+
+Playwright E2E covers home, search, restaurant/menu, reservation, and auth.
+
+```bash
+npx playwright install chromium
+npm test
+```
+
+The test runner starts `next dev`, seeds the database via `/api/seed`, then runs the suite.
+
 ## Demo path
 
 1. Search a city from the hero

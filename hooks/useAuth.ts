@@ -16,11 +16,10 @@ const useAuth = () => {
     },
     handleClose: () => void
   ) => {
-    setAuthState({
-      data: null,
+    setAuthState((prev) => ({
+      ...prev,
       error: null,
-      loading: true,
-    });
+    }));
     try {
       const response = await axios.post("/api/auth/signin", {
         email,
@@ -34,11 +33,13 @@ const useAuth = () => {
       });
       handleClose();
     } catch (error: any) {
-      setAuthState({
+      setAuthState((prev) => ({
+        ...prev,
         data: null,
         error: error.response?.data?.errorMessage || "Sign in failed",
         loading: false,
-      });
+      }));
+      throw error;
     }
   };
 
@@ -60,11 +61,10 @@ const useAuth = () => {
     },
     handleClose: () => void
   ) => {
-    setAuthState({
-      data: null,
+    setAuthState((prev) => ({
+      ...prev,
       error: null,
-      loading: true,
-    });
+    }));
     try {
       const response = await axios.post("/api/auth/signup", {
         email,
@@ -81,11 +81,13 @@ const useAuth = () => {
       });
       handleClose();
     } catch (error: any) {
-      setAuthState({
+      setAuthState((prev) => ({
+        ...prev,
         data: null,
         error: error.response?.data?.errorMessage || "Sign up failed",
         loading: false,
-      });
+      }));
+      throw error;
     }
   };
 

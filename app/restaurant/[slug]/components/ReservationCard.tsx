@@ -1,33 +1,100 @@
 "use client";
 
-export default function ReservationCard() {
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { formatDisplayTime, getAvailableTimes } from "../../../../utils/times";
+
+export default function ReservationCard({
+  slug,
+  openTime,
+  closeTime,
+}: {
+  slug: string;
+  openTime: string;
+  closeTime: string;
+}) {
+  const router = useRouter();
+  const availableTimes = useMemo(
+    () => getAvailableTimes(openTime, closeTime),
+    [openTime, closeTime]
+  );
+
+  const today = new Date().toISOString().split("T")[0];
+  const [partySize, setPartySize] = useState("2");
+  const [date, setDate] = useState(today);
+  const [time, setTime] = useState(availableTimes[0] || "19:00");
+
+  const handleFindTime = () => {
+    const params = new URLSearchParams({
+      date,
+      time,
+      partySize,
+    });
+    router.push(`/reserve/${slug}?${params.toString()}`);
+  };
+
   return (
-    <div className="fixed w-[15%] bg-white rounded p-3 shadow">
-      <div className="text-center border-b pb-2 font-bold">
-        <h4 className="mr-7 text-lg">Make a Reservation</h4>
+    <div className="w-full sticky top-6 bg-white rounded-2xl p-5 border border-[var(--line)] shadow-[0_12px_40px_rgba(18,20,26,0.08)]">
+      <div className="text-center border-b border-[var(--line)] pb-3">
+        <h4 className="text-lg font-semibold text-[var(--ink)]">
+          Make a Reservation
+        </h4>
       </div>
-      <div className="my-3 flex flex-col">
-        <label htmlFor="">Party size</label>
-        <select name="" className="py-3 border-b font-light" id="">
-          <option value="">1 person</option>
-          <option value="">2 people</option>
+      <div className="my-4 flex flex-col gap-1">
+        <label htmlFor="party-size" className="text-sm text-[var(--muted)]">
+          Party size
+        </label>
+        <select
+          id="party-size"
+          className="py-3 border-b border-[var(--line)] bg-transparent font-medium outline-none"
+          value={partySize}
+          onChange={(e) => setPartySize(e.target.value)}
+        >
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+            <option key={n} value={n}>
+              {n} {n === 1 ? "person" : "people"}
+            </option>
+          ))}
         </select>
       </div>
-      <div className="flex justify-between">
-        <div className="flex flex-col w-[48%]">
-          <label htmlFor="">Date</label>
-          <input type="text" className="py-3 border-b font-light w-28" />
+      <div className="flex justify-between gap-3">
+        <div className="flex flex-col w-[48%] gap-1">
+          <label htmlFor="date" className="text-sm text-[var(--muted)]">
+            Date
+          </label>
+          <input
+            id="date"
+            type="date"
+            min={today}
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="py-3 border-b border-[var(--line)] bg-transparent font-medium outline-none w-full"
+          />
         </div>
-        <div className="flex flex-col w-[48%]">
-          <label htmlFor="">Time</label>
-          <select name="" id="" className="py-3 border-b font-light">
-            <option value="">7:30 AM</option>
-            <option value="">9:30 AM</option>
+        <div className="flex flex-col w-[48%] gap-1">
+          <label htmlFor="time" className="text-sm text-[var(--muted)]">
+            Time
+          </label>
+          <select
+            id="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className="py-3 border-b border-[var(--line)] bg-transparent font-medium outline-none"
+          >
+            {availableTimes.map((slot) => (
+              <option key={slot} value={slot}>
+                {formatDisplayTime(slot)}
+              </option>
+            ))}
           </select>
         </div>
       </div>
-      <div className="mt-5">
-        <button className="bg-red-600 rounded w-full px-4 text-white font-bold h-16">
+      <div className="mt-6">
+        <button
+          type="button"
+          onClick={handleFindTime}
+          className="btn-primary w-full h-14"
+        >
           Find a Time
         </button>
       </div>

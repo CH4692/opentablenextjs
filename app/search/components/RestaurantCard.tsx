@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Cuisine, PRICE, Location, Review } from "@prisma/client";
+import { Cuisine, Location, Review, PRICE } from "@prisma/client";
 import Price from "../../components/Price";
 import { calculateReviewRatingAverage } from "../../../utils/calculateRatings";
 import Stars from "../../components/Stars";
@@ -24,37 +24,35 @@ export default function RestaurantCard({
     const rating = calculateReviewRatingAverage(restaurant.reviews);
 
     if (rating > 4) return "Awesome";
-    else if (rating <= 4 && rating > 3) return "Good";
-    else if (rating <= 3 && rating > 0) return "Average";
-    else "";
+    if (rating > 3) return "Good";
+    if (rating > 0) return "Average";
+    return "";
   };
+
   return (
-    <div className="border-b flex pb-5 ml-4">
+    <div className="border border-[var(--line)] rounded-2xl bg-white flex flex-col sm:flex-row gap-4 p-4 mb-4 card-hover">
       <img
-        src={`${restaurant.main_image}`}
-        alt=""
-        className="w-44 h-36 rounded"
+        src={restaurant.main_image}
+        alt={restaurant.name}
+        className="w-full sm:w-44 h-40 object-cover rounded-xl shrink-0"
       />
-      <div className="pl-5">
-        <h2 className="text-3xl">{restaurant.name}</h2>
-        <div className="flex items-start">
-          <div className="flex mb-2">
-            <Stars reviews={restaurant.reviews} />
-          </div>
-          <p className="ml-2 text-sm">{renderRatingText()}</p>
+      <div className="min-w-0">
+        <h2 className="text-2xl font-semibold">{restaurant.name}</h2>
+        <div className="flex items-center mt-1">
+          <Stars reviews={restaurant.reviews} />
+          <p className="ml-2 text-sm text-[var(--muted)]">{renderRatingText()}</p>
         </div>
-        <div className="mb-9">
-          <div className="font-light flex text-reg">
-            <Price price={restaurant.price} />
-            <p className="mr-4 capitalize">{restaurant.cuisine.name}</p>
-            <p className="mr-4 capitalize">{restaurant.location.name}</p>
-          </div>
+        <div className="mt-3 mb-5 font-medium flex flex-wrap gap-x-4 gap-y-1 text-reg text-[var(--muted)]">
+          <Price price={restaurant.price} />
+          <p className="capitalize">{restaurant.cuisine.name}</p>
+          <p className="capitalize">{restaurant.location.name}</p>
         </div>
-        <div className="text-red-600">
-          <Link href={`/restaurant/${restaurant.slug}`}>
-            View more information
-          </Link>
-        </div>
+        <Link
+          href={`/restaurant/${restaurant.slug}`}
+          className="text-[var(--accent)] font-semibold hover:underline"
+        >
+          View more information
+        </Link>
       </div>
     </div>
   );

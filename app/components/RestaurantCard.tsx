@@ -9,26 +9,31 @@ type Props = {
 
 export default function RestaurantCard({ restaurant }: Props) {
   return (
-    <div className="w-64 h-72 m-3 rounded overflow-hidden border cursor-pointer">
-      <Link href={`/restaurant/${restaurant.slug}`}>
-        <img src={restaurant.main_image} alt="" className="w-full h-36" />
-        <div className="p-1">
-          <h3 className="font-bold text-2xl mb-2">{restaurant.name}</h3>
-          <div className="flex items-start">
+    <article className="w-full max-w-[16.5rem] m-2 sm:m-3 rounded-2xl overflow-hidden border border-[var(--line)] bg-white cursor-pointer card-hover">
+      <Link href={`/restaurant/${restaurant.slug}`} className="block">
+        <img
+          src={restaurant.main_image}
+          alt={restaurant.name}
+          className="w-full h-40 object-cover"
+        />
+        <div className="p-3">
+          <h3 className="font-semibold text-xl mb-2 leading-snug line-clamp-2">
+            {restaurant.name}
+          </h3>
+          <div className="flex items-center flex-wrap gap-y-1">
             <Stars reviews={restaurant.reviews} />
-            <p className="ml-2">
+            <p className="ml-2 text-sm text-[var(--muted)]">
               {restaurant.reviews.length} review
-              {restaurant.reviews.length > 1 ? "s" : ""}
+              {restaurant.reviews.length === 1 ? "" : "s"}
             </p>
           </div>
-          <div className="flex text-reg font-light capitalize">
-            <p className=" mr-3">{restaurant.cuisine.name}</p>
+          <div className="flex flex-wrap gap-x-3 gap-y-1 text-reg text-[var(--muted)] mt-2 capitalize">
+            <p>{restaurant.cuisine.name}</p>
             <Price price={restaurant.price} />
             <p>{restaurant.location.name}</p>
           </div>
-          <p className="text-sm mt-1 font-bold">Booked 3 times today</p>
         </div>
       </Link>
-    </div>
+    </article>
   );
 }

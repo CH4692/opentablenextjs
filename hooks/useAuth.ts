@@ -5,6 +5,7 @@ import { deleteCookie } from "cookies-next";
 
 const useAuth = () => {
   const { setAuthState } = useContext(AuthenticationContext);
+
   const signin = async (
     {
       email,
@@ -15,37 +16,32 @@ const useAuth = () => {
     },
     handleClose: () => void
   ) => {
-    console.log("Sign in called");
     setAuthState({
       data: null,
       error: null,
       loading: true,
     });
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/signin",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post("/api/auth/signin", {
+        email,
+        password,
+      });
 
-      console.log(response);
       setAuthState({
         data: response.data,
         error: null,
         loading: false,
       });
       handleClose();
-      console.log("end of the function");
     } catch (error: any) {
       setAuthState({
         data: null,
-        error: error.response.data.errorMessage,
+        error: error.response?.data?.errorMessage || "Sign in failed",
         loading: false,
       });
     }
   };
+
   const signup = async (
     {
       email,
@@ -70,18 +66,14 @@ const useAuth = () => {
       loading: true,
     });
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/signup",
-        {
-          email,
-          password,
-          firstName,
-          lastName,
-          city,
-          phone,
-        }
-      );
-      console.log(response);
+      const response = await axios.post("/api/auth/signup", {
+        email,
+        password,
+        firstName,
+        lastName,
+        city,
+        phone,
+      });
       setAuthState({
         data: response.data,
         error: null,
@@ -91,7 +83,7 @@ const useAuth = () => {
     } catch (error: any) {
       setAuthState({
         data: null,
-        error: error.response.data.errorMessage,
+        error: error.response?.data?.errorMessage || "Sign up failed",
         loading: false,
       });
     }

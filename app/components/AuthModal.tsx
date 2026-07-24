@@ -9,19 +9,21 @@ import { AuthenticationContext } from "../context/AuthContext";
 import { Alert, CircularProgress } from "@mui/material";
 
 const style = {
-  position: "absolute" as "absolute",
+  position: "absolute" as const,
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: "min(400px, 92vw)",
   bgcolor: "background.paper",
   boxShadow: 24,
-  height: 600,
+  maxHeight: "90vh",
+  overflowY: "auto" as const,
   p: 4,
+  borderRadius: "16px",
 };
 
 export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
-  const { error, loading, data } = useContext(AuthenticationContext);
+  const { error, loading } = useContext(AuthenticationContext);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -49,25 +51,22 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
 
   useEffect(() => {
     if (isSignIn) {
-      if (inputs.password && inputs.email) {
-        return setDisabled(false);
-      }
+      setDisabled(!(inputs.password && inputs.email));
     } else {
-      if (
-        inputs.email &&
-        inputs.city &&
-        inputs.firstName &&
-        inputs.lastName &&
-        inputs.password &&
-        inputs.phone
-      ) {
-        return setDisabled(false);
-      }
+      setDisabled(
+        !(
+          inputs.email &&
+          inputs.city &&
+          inputs.firstName &&
+          inputs.lastName &&
+          inputs.password &&
+          inputs.phone
+        )
+      );
     }
-    setDisabled(true);
-  }, [inputs]);
+  }, [inputs, isSignIn]);
 
-  const handleClick = (e: any) => {
+  const handleClick = () => {
     if (isSignIn) {
       signin({ email: inputs.email, password: inputs.password }, handleClose);
     } else {
@@ -78,10 +77,12 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
   return (
     <div>
       <button
-        className={`${renderContent(
-          "bg-blue-400 text-white",
-          ""
-        )} border p-1 px-4 rounded mr-3`}
+        type="button"
+        className={`${
+          isSignIn
+            ? "bg-[var(--ink)] text-white"
+            : "border border-[var(--line)] text-[var(--ink)] bg-white"
+        } px-4 py-2 rounded-lg text-sm font-medium transition hover:opacity-90`}
         onClick={handleOpen}
       >
         {renderContent("Sign in", "Sign up")}
@@ -89,8 +90,7 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby="auth-modal-title"
       >
         <Box sx={style}>
           {loading ? (
@@ -98,22 +98,22 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
               <CircularProgress />
             </div>
           ) : (
-            <div className="p-2">
+            <div className="p-1">
               {error && (
                 <Alert severity="error" className="mb-4">
                   {error}
                 </Alert>
               )}
-              <div className="uppercase font-bold text-center pb-2 border-b mb-2">
-                <p className="text-sm">
+              <div className="uppercase font-bold text-center pb-2 border-b mb-2 tracking-wide text-[var(--muted)]">
+                <p className="text-sm" id="auth-modal-title">
                   {renderContent("Sign In", "Create Account")}
                 </p>
               </div>
-              <div className=" m-auto ">
-                <h2 className="text-2xl font-light text-center">
+              <div className="m-auto">
+                <h2 className="font-display text-2xl text-center mb-1">
                   {renderContent(
-                    "Log  Into your Account",
-                    "Create Your OpenTable Account"
+                    "Log into your account",
+                    "Create your Seatly account"
                   )}
                 </h2>
                 <AuthModalInputs
@@ -122,7 +122,8 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
                   isSignIn={isSignIn}
                 />
                 <button
-                  className=" uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400"
+                  type="button"
+                  className="btn-primary uppercase w-full p-3 rounded-xl text-sm mb-2 disabled:opacity-50"
                   disabled={disabled}
                   onClick={handleClick}
                 >

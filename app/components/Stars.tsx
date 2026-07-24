@@ -24,9 +24,9 @@ export default function Stars({
         else stars.push(fullstar);
       } else stars.push(emptystar);
     }
-    return stars.map((star) => {
-      return <Image src={star} alt="" className="w-4 h-4 mr-1" />;
-    });
+    return stars.map((star, index) => (
+      <Image key={index} src={star} alt="" className="w-4 h-4 mr-1" />
+    ));
   };
   return <div className="flex items-center">{renderStars()}</div>;
 }

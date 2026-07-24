@@ -7,10 +7,17 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const bearerToken = req.headers.authorization as string;
-  const token = bearerToken.split(" ")[1];
-  const payload = jwt.decode(token) as { email: string };
+  const token = bearerToken?.split(" ")[1];
 
-  if (!payload.email) {
+  if (!token) {
+    return res
+      .status(401)
+      .json({ errorMessage: "Unauthorized request (missing token)" });
+  }
+
+  const payload = jwt.decode(token) as { email?: string } | null;
+
+  if (!payload?.email) {
     return res
       .status(401)
       .json({ errorMessage: "Unauthorized request (invalid token)" });
@@ -30,5 +37,18 @@ export default async function handler(
     },
   });
 
-  return res.json({ user });
+  if (!user) {
+    return res
+      .status(401)
+      .json({ errorMessage: "Unauthorized request (user not found)" });
+  }
+
+  return res.status(200).json({
+    id: user.id,
+    firstName: user.first_name,
+    lastName: user.last_name,
+    email: user.email,
+    city: user.city,
+    phone: user.phone,
+  });
 }

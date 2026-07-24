@@ -10,33 +10,28 @@ export default function SearchSideBar({
   cuisines: Cuisine[];
   searchParams: { city?: string; cuisine?: string; price?: PRICE };
 }) {
-  console.log("Locations:");
-  console.log(locations);
-  console.log("Cuisines:");
-  console.log(cuisines);
-  console.log("SearchParams:");
-  console.log(searchParams);
   const prices = [
     {
       price: PRICE.CHEAP,
       label: "$",
-      className: "border w-full text-center text-reg font-light rounded-l p-2",
+      className: "border border-[var(--line)] w-full text-center text-reg font-medium rounded-l-lg p-2 hover:bg-white",
     },
     {
       price: PRICE.REGULAR,
       label: "$$",
-      className: "border w-full text-center text-reg font-light p-2",
+      className: "border-y border-[var(--line)] w-full text-center text-reg font-medium p-2 hover:bg-white",
     },
     {
       price: PRICE.EXPENSIVE,
       label: "$$$",
-      className: "border w-full text-center text-reg font-light rounded-r p-2",
+      className: "border border-[var(--line)] w-full text-center text-reg font-medium rounded-r-lg p-2 hover:bg-white",
     },
   ];
+
   return (
-    <div className="w-1/5">
-      <div className="border-b pb-4 flex flex-col">
-        <h1 className="mb-2">Region</h1>
+    <aside className="w-full lg:w-52 shrink-0 rounded-2xl border border-[var(--line)] bg-white p-4">
+      <div className="border-b border-[var(--line)] pb-4 flex flex-col gap-1">
+        <h2 className="mb-2 font-semibold">Region</h2>
         {locations.map((location) => (
           <Link
             href={{
@@ -47,14 +42,18 @@ export default function SearchSideBar({
               },
             }}
             key={location.id}
-            className="font-light text-reg capitalize"
+            className={`font-medium text-reg capitalize rounded-lg px-2 py-1 ${
+              searchParams.city === location.name
+                ? "bg-[var(--mist)] text-[var(--accent-deep)]"
+                : "text-[var(--muted)] hover:text-[var(--ink)]"
+            }`}
           >
             {location.name}
           </Link>
         ))}
       </div>
-      <div className="border-b pb-4 mt-3 flex flex-col">
-        <h1 className="mb-2">Cuisine</h1>
+      <div className="border-b border-[var(--line)] pb-4 mt-3 flex flex-col gap-1">
+        <h2 className="mb-2 font-semibold">Cuisine</h2>
         {cuisines.map((cuisine) => (
           <Link
             href={{
@@ -65,14 +64,18 @@ export default function SearchSideBar({
               },
             }}
             key={cuisine.id}
-            className="font-light text-reg capitalize"
+            className={`font-medium text-reg capitalize rounded-lg px-2 py-1 ${
+              searchParams.cuisine === cuisine.name
+                ? "bg-[var(--mist)] text-[var(--accent-deep)]"
+                : "text-[var(--muted)] hover:text-[var(--ink)]"
+            }`}
           >
             {cuisine.name}
           </Link>
         ))}
       </div>
-      <div className="mt-3 pb-4">
-        <h1 className="mb-2">Price</h1>
+      <div className="mt-3 pb-1">
+        <h2 className="mb-2 font-semibold">Price</h2>
         <div className="flex">
           {prices.map(({ price, label, className }) => (
             <Link
@@ -84,13 +87,15 @@ export default function SearchSideBar({
                   price,
                 },
               }}
-              className={className}
+              className={`${className} ${
+                searchParams.price === price ? "bg-[var(--mist)]" : ""
+              }`}
             >
               {label}
             </Link>
           ))}
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

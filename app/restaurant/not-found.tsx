@@ -1,16 +1,23 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import errorMascot from "../../public/error.png";
 
-export default function Error({ error }: { error: Error }) {
+export default function NotFound() {
   return (
-    <div className="h-screen bg-gray-200 flex flex-col justify-center items-center">
-      <Image src={errorMascot} alt="error" className="w-56 mb-8" />
-      <div className="bg-white px-9 py-14 shadow rounded">
-        <h3 className="text-3xl font-bold">Well, this is embarassing</h3>
-        <p className="text-reg font-bold">We couldn't find a restaurant</p>
-        <p className="mt-6 text-sm fongt-light">Error Code: 404 </p>
+    <div className="min-h-[70vh] flex flex-col justify-center items-center px-4 py-16">
+      <Image src={errorMascot} alt="not found" className="w-44 mb-8" />
+      <div className="bg-white px-8 py-10 border border-[var(--line)] rounded-2xl max-w-md text-center">
+        <h3 className="font-display text-3xl font-bold mb-2">
+          Well, this is embarrassing
+        </h3>
+        <p className="text-reg text-[var(--muted)]">
+          We couldn&apos;t find that restaurant
+        </p>
+        <Link href="/" className="btn-primary inline-flex mt-8 px-6 py-3">
+          Back home
+        </Link>
       </div>
     </div>
   );

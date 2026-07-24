@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Seatly
 
-## Getting Started
+Restaurant discovery and reservation demo built with **Next.js**, **Prisma**, **Neon Postgres**, JWT auth, and Tailwind CSS. Portfolio project inspired by OpenTable-style booking flows — not affiliated with OpenTable.
 
-First, run the development server:
+## Features
+
+- Browse and search restaurants by city, cuisine, and price
+- Restaurant detail pages with ratings, photos, reviews, and menus
+- Auth (sign up / sign in / session restore / sign out)
+- End-to-end reservation flow persisted in Neon
+
+## Stack
+
+- Next.js App Router + Pages API routes
+- Prisma + Neon PostgreSQL (develop / production branches)
+- Tailwind CSS
+- JWT auth (`jose` + cookie via `cookies-next`)
+
+## Environments
+
+| Git branch   | Neon branch | Env file (local)            |
+|--------------|-------------|-----------------------------|
+| `develop`    | develop     | `.env`                      |
+| `production` | production  | `.env.production.local`     |
+
+On Vercel / hosting:
+- Preview / develop → Neon **develop** `DATABASE_URL` + `DIRECT_URL`
+- Production → Neon **production** `DATABASE_URL` + `DIRECT_URL`
+
+`DIRECT_URL` is the same Neon connection **without** `-pooler` in the hostname (needed for Prisma schema pushes).
+
+## Setup
+
+1. Copy env template and fill Neon URLs:
+
+```bash
+cp .env.example .env
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Push schema to the develop database:
+
+```bash
+npm run db:push:develop
+```
+
+4. Start the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Seed demo data (destructive — wipes existing rows):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000/api/seed](http://localhost:3000/api/seed) once, then return to the home page.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Demo cities: `ottawa`, `toronto`, `niagara`.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Production database
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```bash
+# loads .env.production.local then pushes schema
+set -a && source .env.production.local && set +a && npx prisma db push
+```
 
-## Learn More
+Then set the same production URLs in your host’s Production environment variables.
 
-To learn more about Next.js, take a look at the following resources:
+## Demo path
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Search a city from the hero
+2. Open a restaurant → Overview / Menu
+3. Pick party size, date, time → **Find a Time**
+4. Complete the reservation form
+5. Sign up / sign in and confirm the nav shows your name
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Never commit `.env` / `.env*.local`. Rotate secrets if they were shared in chat or git history.
+- `/api/seed` is blocked on Vercel unless `ALLOW_SEED=true`.
+- This is a learning/portfolio demo.

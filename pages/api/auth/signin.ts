@@ -64,9 +64,10 @@ export default async function handler(
       .setExpirationTime("24h")
       .sign(secret);
 
-    setCookie("jwt", token, { req, res, maxAge: 60 * 6 * 24 });
+    setCookie("jwt", token, { req, res, maxAge: 60 * 60 * 24 });
 
     return res.status(200).json({
+      id: user.id,
       firstName: user.first_name,
       lastName: user.last_name,
       email: user.email,
@@ -75,5 +76,5 @@ export default async function handler(
     });
   }
 
-  return res.status(404).json("Unknown endpoint");
+  return res.status(404).json({ errorMessage: "Unknown endpoint" });
 }

@@ -6,28 +6,30 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Restaurant {
-  id          Int      @id @default(autoincrement())
-  name        String
-  main_image  String
-  images      String[]
-  description String
-  open_time   String
-  close_time  String
-  slug        String   @unique
-  price       PRICE
-  items       Item[]
-  location    Location @relation(fields: [location_id], references: [id])
-  location_id Int
-  cuisine     Cuisine  @relation(fields: [cuisine_id], references: [id])
-  cuisine_id  Int
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  reviews     Review[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  main_image   String
+  images       String[]
+  description  String
+  open_time    String
+  close_time   String
+  slug         String        @unique
+  price        PRICE
+  items        Item[]
+  location     Location      @relation(fields: [location_id], references: [id])
+  location_id  Int
+  cuisine      Cuisine       @relation(fields: [cuisine_id], references: [id])
+  cuisine_id   Int
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  reviews      Review[]
+  reservations Reservation[]
 }
 
 enum PRICE {
@@ -78,14 +80,34 @@ model Review {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  first_name String
-  last_name  String
-  city       String
-  email      String   @unique
-  password   String
-  phone      String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  reviews    Review[]
+  id           Int           @id @default(autoincrement())
+  first_name   String
+  last_name    String
+  city         String
+  email        String        @unique
+  password     String
+  phone        String
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  reviews      Review[]
+  reservations Reservation[]
+}
+
+model Reservation {
+  id              Int        @id @default(autoincrement())
+  restaurant_id   Int
+  restaurant      Restaurant @relation(fields: [restaurant_id], references: [id])
+  user_id         Int?
+  user            User?      @relation(fields: [user_id], references: [id])
+  booker_email    String
+  booker_phone    String
+  booker_first    String
+  booker_last     String
+  booker_occasion String?
+  booker_request  String?
+  party_size      Int
+  booking_date    String
+  booking_time    String
+  created_at      DateTime   @default(now())
+  updated_at      DateTime   @updatedAt
 }

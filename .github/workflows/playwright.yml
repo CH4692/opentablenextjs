@@ -35,15 +35,24 @@ jobs:
 
       - name: Configure database env
         env:
-          DATABASE_URL_SECRET: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL_SECRET: ${{ secrets.DIRECT_URL }}
+          # Prefer exact names; fall back to common alternates
+          DATABASE_URL_SECRET: ${{ secrets.DATABASE_URL || secrets.NEON_DATABASE_URL || secrets.DEV_DATABASE_URL }}
+          DIRECT_URL_SECRET: ${{ secrets.DIRECT_URL || secrets.NEON_DIRECT_URL || secrets.DEV_DIRECT_URL }}
           JWT_SECRET_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           if [ -z "$DATABASE_URL_SECRET" ]; then
-            echo "::error::Missing GitHub secret DATABASE_URL (use Neon develop pooled URL)"
+            echo "::error::GitHub Actions secret DATABASE_URL is empty or missing."
+            echo ""
+            echo "Fix:"
+            echo "  1. Open: Repository → Settings → Secrets and variables → Actions"
+            echo "  2. Tab: Repository secrets  (NOT Variables, NOT Environments)"
+            echo "  3. Create secret named exactly: DATABASE_URL"
+            echo "  4. Value: Neon develop pooled connection string (...-pooler...)"
+            echo "  5. Re-run this workflow"
             exit 1
           fi
 
+          echo "DATABASE_URL is set (length ${#DATABASE_URL_SECRET})"
           echo "DATABASE_URL=$DATABASE_URL_SECRET" >> "$GITHUB_ENV"
 
           if [ -n "$DIRECT_URL_SECRET" ]; then

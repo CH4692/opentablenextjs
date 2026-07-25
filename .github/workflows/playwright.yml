@@ -27,14 +27,39 @@ jobs:
       CI: true
       PORT: 3000
       PLAYWRIGHT_BASE_URL: http://127.0.0.1:3000
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DIRECT_URL: ${{ secrets.DIRECT_URL }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
       APP_ENV: develop
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Configure database env
+        env:
+          DATABASE_URL_SECRET: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL_SECRET: ${{ secrets.DIRECT_URL }}
+          JWT_SECRET_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          if [ -z "$DATABASE_URL_SECRET" ]; then
+            echo "::error::Missing GitHub secret DATABASE_URL (use Neon develop pooled URL)"
+            exit 1
+          fi
+
+          echo "DATABASE_URL=$DATABASE_URL_SECRET" >> "$GITHUB_ENV"
+
+          if [ -n "$DIRECT_URL_SECRET" ]; then
+            echo "DIRECT_URL=$DIRECT_URL_SECRET" >> "$GITHUB_ENV"
+          else
+            # Derive direct URL by removing Neon "-pooler" from the host
+            DERIVED="$(printf '%s' "$DATABASE_URL_SECRET" | sed 's/-pooler//')"
+            echo "DIRECT_URL=$DERIVED" >> "$GITHUB_ENV"
+            echo "DIRECT_URL secret missing — derived from DATABASE_URL"
+          fi
+
+          if [ -n "$JWT_SECRET_SECRET" ]; then
+            echo "JWT_SECRET=$JWT_SECRET_SECRET" >> "$GITHUB_ENV"
+          else
+            echo "JWT_SECRET=ci-playwright-secret" >> "$GITHUB_ENV"
+          fi
 
       - name: Setup Node
         uses: actions/setup-node@v4

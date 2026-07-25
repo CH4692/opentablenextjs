@@ -101,9 +101,9 @@ GitHub Actions runs Playwright daily at **07:00 UTC**, on push/PR, and via **Act
 
 | Secret | Value |
 |--------|--------|
-| `DATABASE_URL` | Neon **develop** pooled URL |
-| `DIRECT_URL` | Neon **develop** direct URL (no `-pooler`) |
-| `JWT_SECRET` | any strong secret for CI |
+| `DATABASE_URL` | Neon **develop** pooled URL (**required**) |
+| `DIRECT_URL` | Neon **develop** direct URL (optional — CI derives it from `DATABASE_URL` by removing `-pooler`) |
+| `JWT_SECRET` | any strong secret for CI (optional — CI falls back to a dummy value) |
 
 **Optional:** `SLACK_WEBHOOK_URL` for Slack alerts.
 

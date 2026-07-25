@@ -1,0 +1,137 @@
+name: Playwright E2E
+
+on:
+  schedule:
+    # Every day at 07:00 UTC (09:00 Berlin summer / 08:00 winter)
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+  push:
+    branches: [develop, production, main]
+  pull_request:
+    branches: [develop, production, main]
+
+concurrency:
+  group: playwright-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Run Playwright tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
+
+    env:
+      CI: true
+      PORT: 3000
+      PLAYWRIGHT_BASE_URL: http://127.0.0.1:3000
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      APP_ENV: develop
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync Prisma schema
+        run: npx prisma db push --skip-generate
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: npm test
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+      - name: Notify on failure (GitHub Issue)
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = "🚨 Playwright E2E tests failed";
+            const body = [
+              `**Playwright run failed.**`,
+              ``,
+              `- **Workflow:** ${context.workflow}`,
+              `- **Branch:** ${context.ref}`,
+              `- **Commit:** \`${context.sha}\``,
+              `- **Run:** ${runUrl}`,
+              ``,
+              `Download the **playwright-report** artifact from the failed run for screenshots and traces.`,
+            ].join("\n");
+
+            try {
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: "playwright-failure",
+                color: "b60205",
+                description: "Automated Playwright E2E failure",
+              });
+            } catch (_) {
+              // label already exists
+            }
+
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "playwright-failure",
+              per_page: 10,
+            });
+
+            const existing = issues.data.find((issue) => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+              core.info(`Commented on existing issue #${existing.number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ["playwright-failure"],
+              });
+              core.info(`Opened issue #${created.data.number}`);
+            }
+
+      - name: Notify on failure (Slack, optional)
+        if: failure()
+        continue-on-error: true
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set — skipping Slack notification"
+            exit 0
+          fi
+          curl -sS -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            --data "{\"text\":\"🚨 Playwright E2E failed on ${{ github.repository }} (${{ github.ref_name }})\\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"

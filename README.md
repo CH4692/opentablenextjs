@@ -29,6 +29,18 @@ On Vercel / hosting:
 
 `DIRECT_URL` is the same Neon connection **without** `-pooler` in the hostname (needed for Prisma schema pushes).
 
+### Vercel env vars (required or build fails)
+
+In **Project → Settings → Environment Variables**, add for **Production** (and Preview if used):
+
+| Name | Example |
+|------|---------|
+| `DATABASE_URL` | Neon pooled URL (`…-pooler…`) |
+| `DIRECT_URL` | Neon direct URL (no `-pooler`) |
+| `JWT_SECRET` | long random string |
+
+Then **Redeploy**. Without `DATABASE_URL` / `DIRECT_URL`, `next build` crashes while prerendering `/` and `/search`.
+
 ## Setup
 
 1. Copy env template and fill Neon URLs:
@@ -80,6 +92,27 @@ npm test
 ```
 
 The test runner starts `next dev`, seeds the database via `/api/seed`, then runs the suite.
+
+### Scheduled CI + failure alerts
+
+GitHub Actions runs Playwright daily at **07:00 UTC**, on push/PR, and via **Actions → Playwright E2E → Run workflow**.
+
+**Required repository secrets** (`Settings → Secrets and variables → Actions`):
+
+| Secret | Value |
+|--------|--------|
+| `DATABASE_URL` | Neon **develop** pooled URL |
+| `DIRECT_URL` | Neon **develop** direct URL (no `-pooler`) |
+| `JWT_SECRET` | any strong secret for CI |
+
+**Optional:** `SLACK_WEBHOOK_URL` for Slack alerts.
+
+On failure the workflow:
+1. Uploads the Playwright HTML report as an artifact
+2. Opens/comments a GitHub Issue labeled `playwright-failure`
+3. Posts to Slack if `SLACK_WEBHOOK_URL` is set
+
+Also enable GitHub email alerts: **GitHub → Settings → Notifications → Actions** → “Send notifications for failed workflows”.
 
 ## Demo path
 

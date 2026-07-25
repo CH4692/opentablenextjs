@@ -325,16 +325,15 @@ export default async function handler(
       {
         name: "Taco N Tequila",
         main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/47429858.jpg",
+          "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=1400&q=80",
         price: PRICE.CHEAP,
         description:
           "As a family owned business, our goal is simple: to consistently deliver fresh and delicious Mexican flavours in a FUN and friendly atmosphere with the best service around!",
         images: [
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/47600418.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/47429797.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/47429802.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/47745097.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/47429814.jpg",
+          "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1613514785940-daed07799d9b?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=1200&q=80",
         ],
         open_time: "10:00:00.000Z",
         close_time: "21:00:00.000Z",
@@ -360,17 +359,15 @@ export default async function handler(
       {
         name: "Cano Restaurant",
         main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/2/43463549.jpg",
+          "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80",
         price: PRICE.REGULAR,
         description:
           "Our back patio has now officially reopened for FOOD SERVICE only. Drinks can be ordered and consumed at the bar before, during, or after dinner service.",
         images: [
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/43463554.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/43463742.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/43463745.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/43463748.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/43463750.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/43463751.jpg",
+          "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1424847651670-bf7e5d1d2140?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80",
         ],
         open_time: "13:00:00.000Z",
         close_time: "21:00:00.000Z",
@@ -402,16 +399,15 @@ export default async function handler(
       {
         name: "Stelvio",
         main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/50557365.jpg",
+          "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=1400&q=80",
         price: PRICE.REGULAR,
         description:
           "Stelvio on Dundas West is an authentic Italian restaurant serving classic old world fare using traditional recipes and ingredients. Recipes have been fine-tuned to satisfy the palate of the modern guest, and fresh meals are prepared daily.",
         images: [
-          "https://resizer.otstatic.com/v2/photos/xlarge/3/26374971.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/26374974.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/26374975.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/26374976.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/50557389.jpg",
+          "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1595295333158-4742f28fbd85?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1579684947550-22e945225d9a?auto=format&fit=crop&w=1200&q=80",
         ],
         open_time: "13:00:00.000Z",
         close_time: "21:00:00.000Z",
@@ -442,18 +438,15 @@ export default async function handler(
       {
         name: "EST Restaurant",
         main_image:
-          "https://resizer.otstatic.com/v2/photos/wide-huge/3/49169798.jpg",
+          "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80",
         price: PRICE.CHEAP,
         description:
           "ēst is a modern, newly reopened restaurant serving Italian-French courses, captivating cocktails and wine.",
         images: [
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/49253937.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/49253940.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/2/49253941.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/49415599.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/49415604.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/49696221.jpg",
-          "https://resizer.otstatic.com/v2/photos/xlarge/1/49999039.jpg",
+          "https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80",
         ],
         open_time: "09:00:00.000Z",
         close_time: "21:00:00.000Z",
